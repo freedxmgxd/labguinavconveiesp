@@ -96,13 +96,16 @@ P_apogeu  = [-r_apogeu; 0; 0];
 % =========================================================================
 % 5. ROTAÇÃO DO PLANO PERIFOCAL PARA O SGI (Inercial)
 % =========================================================================
-% Matrizes de rotação padrão (Perifocal -> Inercial)
-R_ARNA  = [cosd(ARNA) -sind(ARNA) 0; sind(ARNA) cosd(ARNA) 0; 0 0 1];
-R_inc   = [1 0 0; 0 cosd(inc) -sind(inc); 0 sind(inc) cosd(inc)];
-R_omega = [cosd(OMEGA) -sind(OMEGA) 0; sind(OMEGA) cosd(OMEGA) 0; 0 0 1];
-
-% Matriz de transformação combinada (verificado numericamente: correta)
-Q = R_ARNA * R_inc * R_omega;
+% Convenção conforme PB2-plano.orbital-SGI.pdf (Prof. Gil):
+%   Rotações no sentido HORÁRIO => ângulos NEGATIVOS.
+%   1ª: -omega em torno de z  (rotz1)
+%   2ª: -i     em torno de x  (rotx2)
+%   3ª: -arna  em torno de z  (rotz3)
+%   Pxyz = rotz3 * rotx2 * rotz1 * Ppolar
+rotz1 = [cosd(-OMEGA)  sind(-OMEGA) 0; -sind(-OMEGA) cosd(-OMEGA) 0; 0 0 1];
+rotx2 = [1 0 0; 0 cosd(-inc)  sind(-inc); 0 -sind(-inc) cosd(-inc)];
+rotz3 = [cosd(-ARNA)   sind(-ARNA)  0; -sind(-ARNA)  cosd(-ARNA)  0; 0 0 1];
+Q     = rotz3 * rotx2 * rotz1;
 
 % Órbita completa em SGI
 Pxyz = Q * Ppolar;
@@ -113,6 +116,16 @@ rz   = Pxyz(3, :);
 % Perigeu e apogeu em SGI
 sgi_perigeu = Q * P_perigeu;
 sgi_apogeu  = Q * P_apogeu;
+
+% ----- Verificação numérica do fechamento da órbita -----
+% O ponto r (dado do enunciado) deve coincidir com o ponto da órbita em NI.
+% Erro < 1 km é aceitável dado o passo discreto de ni_vetor.
+idx_ni = max(1, round(NI / 360 * (length(ni_vetor)-1)) + 1);
+erro_fechamento = norm([rx(idx_ni) ry(idx_ni) rz(idx_ni)] - r);
+fprintf('\n[VERIFICAÇÃO] Erro de fechamento da órbita em NI=%.4f°: %.4f km\n', NI, erro_fechamento);
+if erro_fechamento > 10
+    warning('Erro de fechamento alto (%.2f km). Verifique as rotações!', erro_fechamento);
+end
 
 % =========================================================================
 % 6. CÁLCULO DE LATITUDE E LONGITUDE (C/ ROTAÇÃO DA TERRA)
