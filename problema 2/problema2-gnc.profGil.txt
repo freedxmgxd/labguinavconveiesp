@@ -1,0 +1,77 @@
+Prof. Gil - Engenharia Aeroespacial/UFABC
+
+Lab de GN&C - abordagem a partir da solução de problemas
+Proposta.
+• Solução de problemas propostos a partir de modelagem e simulação no MATLAB.
+• Os problemas são propostos como projetos.
+• Sua solução acompanha um ou mais arquivos .m (script do MATLAB), onde a
+modelagem utilizada é descrita e a solução do problema, via simulação, é obtida e
+apresentada.
+
+PROBLEMA 2
+
+Tema: Órbita de um V/E. Determinação e gráficos (inclui o Ground Track).
+Objetivo: Revisão dos EOC (Elementos Orbitais Clássicos) que determinam/definem uma
+órbita. Determinação destes (da órbita) a partir de medições de R e V. Apresentação
+gráfica da órbita determinada (2D e 3D, no SGI => MATLAB) e ground track (gráfico que
+mostra o caminho percorrido pelo V/E em sua órbita sobre um mapa da superfície terrestre
+mapa “mundi” => projeção de Mercator).
+Obs.: Use o MATLAB (ou similar) para todos os gráficos. Adicionalmente, também é
+possível usar software especializado para gráficos do tipo “ground tracks” (o “Orbitron”, por
+exemplo; ver notas da aula de Astronáutica "6- descrevendo orbitas" para conhecer outros
+programas para esse fim).
+Enunciado: Oficiais do comando de operações espaciais enviam p/ você um par de
+vetores posição e velocidade inerciais para um corpo celeste conhecido.
+Dados:
+
+R = [-375,12842 -5011,13118 4469,62763]; (Km)
+V = [7,471975 -1,529935 -1,077989]; (Km/s)
+
+1) Determine a órbita deste satélite, isto é, determine os seus EOC (ângulos em graus
+decimais, distâncias em km, tempo em seg).
+2) Obtenha a equação desta órbita em coordenadas polares e grafique-a como função da
+anomalia verdadeira (gráfico 2D: no plano da órbita).
+3) Transforme as coordenadas polares ( R), no plano da órbita, para coordenadas
+geocêntricas inerciais (X,Y,Z), no SGI, e crie um gráfico 3D desta órbita.
+4) Crie um gráfico do trajeto descrito por esta órbita sobre a superfície da Terra (ground track).
+Obs.: Crie um programa/script do MATLAB para realizar as tarefas 1, 2, 3 e 4.
+
+5) Inclua em seu relatório um breve estudo sobre o software Orbitron, especializado em
+gráficos do tipo ground track (para comparação com aquele obtido no MATLAB). Identifique
+e descreva os parâmetros que o software necessita para poder graficar o ground track de
+
+um V/E (chamados ‘TLEs’). Discuta como esses parâmetros se relacionam com os EOC
+que você determinou neste problema. Se você conhece algum outro software utilizado para
+esse fim, pode realizar um estudo sobre ele ao invés do Orbitron.
+Roteiro p/ solução:
+A) Rever aula de Introdução à Astronáutica "6-descrevendo orbitas" sobre determinação de
+órbitas (arquivo pdf enviado).
+B) Estude a Ajuda e os demos do MATLAB (ou similar) para entender como criar os gráficos.
+C) Para resolver os itens 3 e 4, você precisará simular a órbita completa no plano orbital.
+Use a equação da elipse (com os EOC determinados; ver ref citada acima) e tome a
+anomalia verdadeira, fazendo-a variar de 0 a 360o. Depois, para cada vetor R no plano
+orbital, você deverá obter as coordenadas inerciais (X, Y, Z) correspondentes (ver arquivo
+“P2-plano.orbital-SGI.pdf”, em anexo) e, então, fará um gráfico 3D do conjunto de
+coordenadas obtidas. Para isso, faça suposições simplificadoras e realize as rotações que
+levam o sistema no plano da órbita ao SGI. Espera-se um gráfico que mostre uma elipse
+em torno da origem do sistema de coordenadas (muito similar ao obtido no Problema 1,
+mas obtido por via diferente).
+Referências para esta atividade:
+• BRUM, A. G. V. de Aulas da disciplina ESTS003-17 - Introdução à Astronáutica (pdf). UFABC, 2026.
+
+• SELLERS , Jerry Jon Understanding Space: An Introduction to Astronautics (Third
+Edition). McGraw-Hill, 2005. 642 p.
+• ORBITRON (http://www.stoff.pl/): Orbitron é um sistema de localização por satélite para
+fins de rádio amador e de observação. É também usado por profissionais de
+meteorologia, usuários de comunicação via satélite, pesquisadores de OVNIs e
+astrólogos. O aplicativo mostra as posições dos satélites a qualquer momento (em
+tempo real ou simulado). É GRÁTIS (Cardware) e é provavelmente um dos rastreadores
+via satélite mais simples e poderosos, de acordo com a opinião de milhares de usuários
+de todo o mundo.
+• Conteúdo adicional em pdf: - Arquivos:
+I. ”P2-apendices.pdf” - contém descrição dos sistemas de coordenadas utilizados e transformações
+entre eles.
+II. “P2-plano.orbital-SGI” - sobre a passagem do vetor descrito em coordenadas polares para
+coordenadas cartesianas inerciais.
+
+

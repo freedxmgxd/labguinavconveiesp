@@ -1,0 +1,178 @@
+LABORATÓRIO DE GN&C - Prof. Gil
+
+APÊNDICE A
+
+SISTEMAS DE REFERÊNCIA (BRUM, 1999).
+
+Neste trabalho os sistemas geocêntricos terrestres utilizam o elipsóide de referência de
+1980 (GRS80: “Geodetic Reference System”), onde
+
+Requador = 6378.137 Km
+Rpolar = 6356.7523 Km
+“Achatamento” = Req2 / Rp2 = 1.0067395
+
+Obs.: Mais usualmente, entende-se por achatamento o valor de (Req - Rp) / Req.
+A.1 - SISTEMA GEOCÊNTRICO INERCIAL (XYZ, X → ϒ)
+
+É um sistema destrógiro, tal que Ẑ = X̂ X Ŷ ,
+
+com eixo X passando pelo ponto de equinócio vernal (ϒ), eixo Y a 90° no sentido antihorário e eixo Z na direção do pólo norte celeste.
+A.2 - SISTEMA CARTESIANO TERRESTRE (xyz, x → Greenwich)
+
+Sistema destrógiro geocêntrico que tem o equador como plano fundamental.
+O eixo x aponta para o cruzamento entre a linha do equador e o meridiano de Greenwich,
+eixo y a 90° no sentido anti-horário e eixo z na direção do pólo norte terrestre ( x̂ x ŷ =
+ẑ ).
+
+O
+
+sistema
+
+é
+
+ilustrado
+
+na
+
+Figura
+
+B.1.
+
+A.3 - COORDENADAS GEOGRÁFICAS OU GEODÉTICAS (LATITUDE, LONGITUDE,
+ALTITUDE)
+
+Utiliza o GRS80 (SPOT e CNES, 1988). A latitude é definida com relação à
+vertical local. A altitude é definida perpendicularmente à geóide local (Escobal, 1965). A
+latitude geodética e a longitude são tomados a partir de uma transformação das
+coordenadas cartesianas terrestres. Neste trabalho utilizamos uma rotina da biblioteca
+“ORBA” de rotinas em FORTRAN (Kuga et al., 1980-1990) para efetuar tal
+transformação.
+
+A.4 - COORDENADAS GEOCÊNTRICAS DE LATITUDE E LONGITUDE
+
+Sistema baseado no cartesiano geocêntrico. O plano fundamental é o do
+Equador (Figura B-1). A latitude é a medida do ângulo geocêntrico desde o equador até o
+paralelo local. A longitude é o ângulo sobre o Equador (a oeste) desde o meridiano de
+Greenwich até o meridiano local.
+
+A.5 - SISTEMA FIXO NO CORPO DO SATÉLITE (x y z)
+
+É um sistema destrógiro, preso ao corpo do satélite, com origem no centro
+r
+
+de massa do mesmo e tal que x X y = z . As direções dos eixos são dadas na Figura
+r
+
+r
+
+A.1. Em condição de erro nulo em atitude, os sistemas orbital (rpy) e do corpo (xyz) são
+coincidentes.
+
+A. 6 - SISTEMA (CARTESIANO) FIXO NA ÓRBITA - (r p y)
+
+O sistema rpy (r=“roll” ou rolamento, direção da órbita; p=“pitch” ou arfagem,
+perpendicular à órbita; y (“yaw” ou guinada, aponta para o centro da Terra), é um sistema
+destrógiro, com origem no centro de massa do satélite, fixo à órbita do mesmo e tal que
+r
+r
+r
+r X p = y . Em caso de erro nulo em atitude, temos a coincidência entre este sistema e
+
+o sistema fixo no corpo do satélite: x ≡ r; y ≡ p e z ≡ y.
+
+As direções dos eixos são dadas na Figura A.1 a seguir.
+2
+
+Fig. A.1 - Sistemas orbitais rpy (fixo na órbita) e xyz (fixo no satélite).
+
+APÊNDICE B
+
+TRANSFORMAÇÕES ENTRE SISTEMAS DE COORDENADAS (BRUM, 1999).
+
+B.1 - TRANSFORMAÇÃO: LATITUDE E LONGITUDE GEOCÊNTRICAS A PARTIR DAS
+COORDENADAS GEOCÊNTRICAS INERCIAIS
+
+Tomando-se o ponto
+
+r
+P int
+
+, em coordenadas inerciais, com suas
+
+coordenadas dadas por
+
+r
+P int = (PX, PY, PZ).
+
+A latitude geocêntrica Φ‘ (Figura B.1) do ponto em questão é dada simplesmente por
+
+PZ
+
+tg (Φ‘) =
+
+PX + PY
+2
+
+2
+
+A longitude (a leste) λE não é tão diretamente obtenível. Para o seu cálculo
+é necessário conhecer o tempo sideral θ do ponto imageado pelo pixel (I,J) no instante ti
+(ver Figura B.1), bem como o tempo sideral de Greenwich θg (posição do meridiano de
+Greenwich), a leste de X≡ϒ, no instante ti (Escobal, 1985).
+
+3
+
+λE =
+
+θ - θg
+
+com θ dado por
+
+tg (θ) = PY / PX
+
+Fig. B.1 - Cálculo da latitude e longitude geocêntricas.
+Obs.: θ, λE :Ângulos positivos no sentido anti-horário, conforme vistos de +Z;
+0 hr ≤ θ ≤ 24 hr ou 0 ≤ θ ≤ 2π.
+0° ≤ λE ≤ 360°. Se λE < 0 => λE = 360° +λE; Se λE > 360° => λE = λE -360°.
+-90° ≤ Φ‘ ≤ 90°. Positivo ao norte do Equador.
+
+Observando só o Sistema Cartesiano Terrestre (SCT), identificamos a
+latitude e a longitude geocêntricas mais claramente (Fig. B.2).
+
+PZ
+
+tg (Φ‘) =
+
+PX + PY
+2
+
+2
+
+e =
+
+tg (λE) = PY / PX
+
+É importante observar que, dentro do intervalo de 0 e 2π, há dois ângulos que tem a
+mesma tangente. Determinar qual deles é o procurado exige resolução desta
+ambiguidade.
+
+4
+
+Dentro da biblioteca "ORBA" (Kuga et al., 1980-1990; INPE) de rotinas em FORTRAN
+encontram-se as rotinas que obtém a data Juliana e o tempo sideral de Greenwich,
+necessários para obtenção das coordenadas cartesianas terrestres, a partir das
+geocêntricas inerciais. Também, dentro da mesma biblioteca encontram-se as rotinas que
+realizam os cálculos descritos acima.
+
+Fig. B.2 – Sistema Cartesiano Terrestre: latitude e longitude geocêntricas.
+
+Referências:
+BRUM, Antonio Gil Vicente de "O Uso da Câmera Imageadora de Satélites de Sensoriamento
+Remoto como Sensor de Atitude: Simulação Computacional". Publicação do Instituto
+Nacional de Pesquisas Espaciais – INPE. INPE-7265-TDI/707. S.J. dos Campos, S.P. Jul/1999.
+113 p. Publicada eletronicamente na íntegra:
+http://mtc-05.sid.inpe.br/col/sid.inpe.br/deise/2000/02.28.08.09/doc/homepage.pdf.
+
+5
+
+

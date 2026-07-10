@@ -119,31 +119,35 @@ sgi_apogeu  = Q * P_apogeu;
 
 % ----- Verificação numérica do fechamento da órbita -----
 % O ponto r (dado do enunciado) deve coincidir com o ponto da órbita em NI.
-% Erro < 1 km é aceitável dado o passo discreto de ni_vetor.
+% Cálculo analítico exato do fechamento da órbita em NI (sem erro de discretização)
+Ppolar_exact = [p / (1 + norma_exc * cosd(NI)) * cosd(NI); p / (1 + norma_exc * cosd(NI)) * sind(NI); 0];
+r_exact_sgi = Q * Ppolar_exact;
+erro_fechamento_analitico = norm(r_exact_sgi' - r);
+fprintf('\n[VERIFICAÇÃO] Erro de fechamento da órbita (analítico) em NI=%.4f°: %.4e km\n', NI, erro_fechamento_analitico);
+
+% Apenas para referência, o índice discreto mais próximo em ni_vetor
 idx_ni = max(1, round(NI / 360 * (length(ni_vetor)-1)) + 1);
-erro_fechamento = norm([rx(idx_ni) ry(idx_ni) rz(idx_ni)] - r);
-fprintf('\n[VERIFICAÇÃO] Erro de fechamento da órbita em NI=%.4f°: %.4f km\n', NI, erro_fechamento);
-if erro_fechamento > 10
-    warning('Erro de fechamento alto (%.2f km). Verifique as rotações!', erro_fechamento);
-end
 
 % =========================================================================
 % 6. CÁLCULO DE LATITUDE E LONGITUDE (C/ ROTAÇÃO DA TERRA)
 % =========================================================================
 lat = atan2d(rz, sqrt(rx.^2 + ry.^2));
 
-% Tempo de voo desde o perigeu para cada ponto (Equação de Kepler)
-E_vetor = 2 * atan(sqrt((1 - norma_exc)/(1 + norma_exc)) * tan(ni_vetor/2));
+% Tempo de voo desde o perigeu para cada ponto (Equação de Kepler contínua via atan2)
+E_vetor = 2 * atan2(sqrt(1 - norma_exc) * sin(ni_vetor/2), sqrt(1 + norma_exc) * cos(ni_vetor/2));
 M_vetor = E_vetor - norma_exc * sin(E_vetor);
 t       = M_vetor / n_medio;
-t(t < 0) = t(t < 0) + 2*pi/n_medio;   % Ajuste de tempo negativo
 
 % TODO: revisar - longitude estava em [0, 360]; ajustado para [-180, 180] para
 %                 compatibilidade com mapas padrão (mapa-mundi)
 % lon = atan2d(ry, rx) - rad2deg(omega_terra * t);
 % lon = mod(lon, 360);   % TODO: revisar - mod para [0,360] causava artefato visual
 
-lon = atan2d(ry, rx) - rad2deg(omega_terra * t);
+% Para garantir que no instante inicial t_sim = 0 (quando o satélite está em NI, t = t(idx_ni))
+% a longitude coincida com a longitude inercial (Greenwich e Aries coincidentes),
+% descontamos o tempo do perigeu até a anomalia inicial t(idx_ni):
+t_sim = t - t(idx_ni);
+lon = atan2d(ry, rx) - rad2deg(omega_terra * t_sim);
 lon = mod(lon + 180, 360) - 180;   % Intervalo [-180°, 180°]
 
 % Tratar descontinuidades de longitude para plotagem contínua
@@ -159,15 +163,25 @@ lat_plot(idx_breaks) = NaN;
 % 7. GRÁFICOS
 % =========================================================================
 
-% --- Gráfico 1: Plano 2D Perifocal ---
+% --- Gráfico 1: Plano 2D da Órbita (Cartesiano e Polar) ---
 figure(1);
+% 1.1 Representação Cartesiana no plano perifocal
+subplot(1, 2, 1);
 plot(Ppolar(1,:)/1e3, Ppolar(2,:)/1e3, 'b-', 'LineWidth', 1.8); hold on; grid on; axis equal;
 plot(0, 0, 'ro', 'MarkerSize', 8, 'MarkerFaceColor', 'r');           % Terra (foco)
 plot(P_perigeu(1)/1e3, P_perigeu(2)/1e3, 'g^', 'MarkerSize', 9, 'MarkerFaceColor', 'g'); % Perigeu
 plot(P_apogeu(1)/1e3,  P_apogeu(2)/1e3,  'ms',  'MarkerSize', 9, 'MarkerFaceColor', 'm'); % Apogeu
-legend('Órbita', 'Terra (foco)', 'Perigeu', 'Apogeu', 'Location', 'best');
-title('Plano Perifocal 2D');
+legend('Órbita', 'Terra (foco)', 'Perigeu', 'Apogeu', 'Location', 'northeast');
+title('Plano Perifocal (Cartesiano 2D)');
 xlabel('X_p (10³ km)'); ylabel('Y_p (10³ km)');
+hold off;
+
+% 1.2 Representação Polar (conforme item 2 do enunciado e orientações do PDF)
+subplot(1, 2, 2);
+polar(ni_vetor, r_polar/1e3, 'b-'); hold on;
+polar(0, r_perigeu/1e3, 'g^');
+polar(pi, r_apogeu/1e3, 'ms');
+title('Plano da Órbita (Polar 2D)');
 hold off;
 
 % --- Gráfico 2: Órbita em 3D (SGI) ---
@@ -179,7 +193,7 @@ plot3(sgi_perigeu(1), sgi_perigeu(2), sgi_perigeu(3), 'g^', ...
       'MarkerSize', 9, 'MarkerFaceColor', 'g');                                   % Perigeu
 plot3(sgi_apogeu(1),  sgi_apogeu(2),  sgi_apogeu(3),  'ms', ...
       'MarkerSize', 9, 'MarkerFaceColor', 'm');                                    % Apogeu
-legend('Órbita (SGI)', 'Pos. inicial', 'Terra', 'Perigeu', 'Apogeu', 'Location', 'best');
+legend('Órbita (SGI)', 'Pos. inicial', 'Terra', 'Perigeu', 'Apogeu', 'Location', 'northeast');
 title('Sistema Geocêntrico Inercial 3D (Trajetória)');
 xlabel('X (km)'); ylabel('Y (km)'); zlabel('Z (km)');
 hold off;
@@ -258,9 +272,9 @@ hold on; grid on;
 % plot(lon, lat, 'b.', 'MarkerSize', 6);
 plot(lon_plot, lat_plot, 'b-', 'LineWidth', 1.4);
 
-% Ponto inicial
-plot(lon(1), lat(1), 'mo', 'MarkerSize', 10, 'MarkerFaceColor', 'm');
-legend('Linhas de costa', 'Ground Track', 'Pos. inicial', 'Location', 'best');
+% Ponto inicial (marcado na longitude/latitude correta do instante t_sim = 0, correspondente a idx_ni)
+plot(lon(idx_ni), lat(idx_ni), 'mo', 'MarkerSize', 10, 'MarkerFaceColor', 'm');
+legend('Linhas de costa', 'Ground Track', 'Pos. inicial', 'Location', 'northeast');
 
 title('Rastreio no Solo Real (Ground Track)');
 xlabel('Longitude (graus)'); ylabel('Latitude (graus)');

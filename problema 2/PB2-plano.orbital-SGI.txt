@@ -1,0 +1,43 @@
+Lab de GN&C - Prof. Gil
+Sobre a passagem do vetor descrito em coordenadas polares para coordenadas
+cartesianas inerciais.
+Sabemos que os EOC são calculados com base no SGI (R e V vetores no SGI). Assim, a
+relação entre ambos é direta e a passagem da descrição da órbita de um sistema para outro
+pode ser obtida facilmente.
+Para simplificação deste problema, podemos supor que o Sistema de Coordenadas Cartesianas
+Terrestres (x,y,z, com x em Greenwich) permanece coincidente com o SGI (X,Y,Z, com X no
+ponto de áries).
+Consideremos o sistema de coordenadas no plano da órbita (Fig. 1).
+
+Figura 1 – Coordenadas do V/E no plano da órbita: polares (R, ), ou cartesianas (x, y).
+Em termos de coordenadas polares,
+temos a posição do V/E dada por
+Com a e e fixos, R é função de . Assim, podemos criar um gráfico polar.
+A posição do V/E no plano xy da órbita (x na direção
+do perigeu, y a 90 graus (anti-horário), z na direção do
+momento angular, h, é dada pelo vetor
+
+Ppolar = [R.cos(ni); R.sin(ni); 0]'
+
+Neste caso, três rotações levam o vetor Ppolar, descrito no sistema do plano da órbita, para
+coord. cart inerciais (SGI), Pxyz = [rx,ry,rz]'. A Figura 2 ilustra as rotações em questão.
+Obs.: todas são no sentido horário => ângulos negativos.
+
+Figura 2 – Relação entre SGI e sistema de coordenadas no plano da órbita.
+As rotações são:
+1a: -omega em torno do eixo z; 2a: -i em torno do eixo x; 3a: -arna em torno de z. As
+matrizes relativas a estas rotações, respectivamente, são dadas a seguir.
+rotz1= [cos(-omega) sin(-omega) 0; -sin(-omega) cos(-omega) 0; 0 0 1];
+rotx2=[1 0 0;0 cos(-i) sin(-i);0 -sin(-i) cos(-i)];
+rotz3=[cos(-arna) sin(-arna) 0;-sin(-arna) cos(-arna) 0; 0 0 1];
+Com uso destas três rotações, na ordem citada, obtém-se a posição SGI do V/E, a partir da
+posição no plano da órbita:
+Pxyz = rotz3*rotx2*rotz1*Ppol ;
+Assim, para cada vetor posição em coordenadas no plano da órbita, tem-se o mesmo vetor
+descrito em coordenadas cartesianas geocêntricas inerciais. Como consideramos aqui que
+estas são coincidentes com o SCT (sistema cartesiano terrestre), temos condição de obter, a
+partir destas, as coordenadas de latitude e longitude do V/E para cada posição Pxyz que ele
+ocupe.
+Pxyz = [rx,ry,rz]'
+
+
