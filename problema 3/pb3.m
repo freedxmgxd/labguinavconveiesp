@@ -80,33 +80,36 @@ function pb3()
     dec_s = ((dec_deg - dec_d) * 60 - dec_m) * 60;
 
     % =========================================================================
-    % IMPRESSÃO DOS RESULTADOS NO CONSOLE
+    % IMPRESSÃO DOS RESULTADOS EM FORMATO DE TABELA LATEX
     % =========================================================================
-    fprintf('----------------------------------------------------------\n');
-    fprintf('1. Dados Geográficos de Entrada:\n');
-    fprintf('   Latitude Geodésica (phi)  : %02d° %02d'' %05.2f\" N  (= %12.8f°)\n', lat_deg, lat_min, lat_sec, phi);
-    fprintf('   Longitude Leste (lambda_E): %02d° %02d'' %05.2f\" E  (= %12.8f°)\n', lon_deg, lon_min, lon_sec, lambda_E);
-    fprintf('   Altitude (H)              : %6.1f m         (= %12.6f km)\n', alt_m, H);
-    fprintf('----------------------------------------------------------\n');
-    fprintf('2. Tempo e Data Juliana (UT: %02d/%02d/%04d %02d:%02d:%04.1f):\n', dia, mes, ano, hora, minuto, segundo);
-    fprintf('   Data Juliana (meio-dia)   : %d\n', JD_meiodia);
-    fprintf('   Data Juliana com fração   : %18.10f\n', JD_frac);
-    fprintf('   Data Juliana Modificada   : %18.10f (MJD)\n', DJM_frac);
-    fprintf('   Tempo Sideral de Greenwich: %12.8f° (TSG)\n', tsg_graus);
-    fprintf('----------------------------------------------------------\n');
-    fprintf('3. Vetor no Sistema de Coordenadas Terrestres (SCT):\n');
-    fprintf('   aT = [%14.6f, %14.6f, %14.6f] km\n', aT(1), aT(2), aT(3));
-    fprintf('   Magnitude |aT|: %10.4f km\n', norm(aT));
-    fprintf('----------------------------------------------------------\n');
-    fprintf('4. Vetor no Sistema Geocêntrico Inercial (SGI):\n');
-    fprintf('   aI_pos = [%14.6f, %14.6f, %14.6f] km\n', aI_pos(1), aI_pos(2), aI_pos(3));
-    fprintf('   Versor aI = [%12.8f, %12.8f, %12.8f]\n', aI(1), aI(2), aI(3));
-    fprintf('   Verificação (|aI|): %1.8f\n', norm(aI));
-    fprintf('----------------------------------------------------------\n');
-    fprintf('5. Coordenadas Celestiais Zenitais do Local (Apontamento):\n');
-    fprintf('   Ascensão Reta (AR)  : %02dh %02dm %05.2fs  (= %12.8f°)\n', ar_h, ar_m, ar_s, ra_deg);
-    fprintf('   Declinação (DEC)    : %+02d° %02d'' %05.2f\"   (= %12.8f°)\n', dec_d, dec_m, dec_s, dec_deg);
-    fprintf('   Constelação no Zênite: PEGASUS\n');
+    fprintf('==========================================================\n');
+    fprintf('       RESULTADOS EM FORMATO DE TABELA LATEX\n');
+    fprintf('==========================================================\n');
+    fprintf('\\begin{table}[h!]\n');
+    fprintf('\\centering\n');
+    fprintf('\\caption{Resultados da Simulação — Problema 3}\n');
+    fprintf('\\label{tab:resultados_pb3}\n');
+    fprintf('\\begin{tabular}{lcc}\n');
+    fprintf('\\hline\n');
+    fprintf('\\textbf{Parâmetro} & \\textbf{Valor} & \\textbf{Unidade} \\\\ \\hline\n');
+    fprintf('Latitude Geodésica ($\\phi$) & %02d$^\\circ$ %02d'' %05.2f" N ($%12.8f^\\circ$) & deg \\\\\n', lat_deg, lat_min, lat_sec, phi);
+    fprintf('Longitude Leste ($\\lambda_E$) & %02d$^\\circ$ %02d'' %05.2f" E ($%12.8f^\\circ$) & deg \\\\\n', lon_deg, lon_min, lon_sec, lambda_E);
+    fprintf('Altitude ($H$) & %6.1f (%12.6f) & m (km) \\\\ \\hline\n', alt_m, H);
+    fprintf('Data / Horário (U.T.) & %02d/%02d/%04d às %02d:%02d:%04.1f & -- \\\\\n', dia, mes, ano, hora, minuto, segundo);
+    fprintf('Data Juliana ($JD_{\\text{meio-dia}}$) & %d & dias \\\\\n', JD_meiodia);
+    fprintf('Data Juliana com Fração ($JD$) & %18.10f & dias \\\\\n', JD_frac);
+    fprintf('Data Juliana Modificada ($MJD$) & %18.10f & dias \\\\\n', DJM_frac);
+    fprintf('Tempo Sideral de Greenwich ($\\theta_g$) & %12.8f$^\\circ$ & deg \\\\ \\hline\n', tsg_graus);
+    fprintf('Vetor de Posição SCT ($\\vec{a}_T$) & [%14.6f, %14.6f, %14.6f] & km \\\\\n', aT(1), aT(2), aT(3));
+    fprintf('Magnitude $|\\vec{a}_T|$ & %10.4f & km \\\\ \\hline\n', norm(aT));
+    fprintf('Vetor de Posição SGI ($\\vec{a}_{I,\\text{pos}}$) & [%14.6f, %14.6f, %14.6f] & km \\\\\n', aI_pos(1), aI_pos(2), aI_pos(3));
+    fprintf('Versor Zênite Inercial ($\\vec{a}_I$) & [%12.8f, %12.8f, %12.8f] & -- \\\\\n', aI(1), aI(2), aI(3));
+    fprintf('Verificação ($|\\vec{a}_I|$) & %1.8f & -- \\\\ \\hline\n', norm(aI));
+    fprintf('Ascensão Reta ($\\alpha$) & %02dh %02dm %05.2fs ($%12.8f^\\circ$) & -- (deg) \\\\\n', ar_h, ar_m, ar_s, ra_deg);
+    fprintf('Declinação ($\\delta$) & %+02d$^\\circ$ %02d'' %05.2f" ($%12.8f^\\circ$) & -- (deg) \\\\\n', dec_d, dec_m, dec_s, dec_deg);
+    fprintf('Constelação no Zênite & PEGASUS (Scheat / Matar) & -- \\\\ \\hline\n');
+    fprintf('\\end{tabular}\n');
+    fprintf('\\end{table}\n');
     fprintf('==========================================================\n\n');
 
     % =========================================================================
