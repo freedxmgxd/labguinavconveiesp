@@ -65,7 +65,6 @@ Vy_ch3   = V0y - g*t_livre3 + ay_34*t_freio_x;    % Vy chaveamento = -7.72 m/s
 y_ch3    = (y0 + V0y*t_livre3 - 0.5*g*t_livre3^2) + (V0y - g*t_livre3)*t_freio_x + 0.5*ay_34*t_freio_x^2; % 42.75 m
 x_ch3    = V0x * t_livre3 + dx_brake;             % x chaveamento = 8.53 m
 
-% Cálculo exato de t3_A (tempo em ±34°) e t3_B (tempo em 0°) para pousar em (0,0)
 A3_quad = 0.5 * ay_34 * (1 - ay_34 / ay_zero);
 B3_quad = Vy_ch3 * (1 - ay_34 / ay_zero);
 C3_quad = y_ch3 - (Vy_ch3^2) / (2 * ay_zero);
@@ -167,49 +166,43 @@ end
 figure('Name', 'Estratégia 1 (Vencedora)', 'Color', 'w');
 subplot(1,2,1); plot(x1, y1_sim, 'b-', 'LineWidth', 2.5); hold on; grid on; box on;
 plot(x1(1), y1_sim(1), 'ko', 'MarkerFaceColor', 'k');
-plot(x_ch1, y_ch1, 'gs', 'MarkerFaceColor', 'g', 'MarkerSize', 8);
 plot(x1(end), y1_sim(end), 'r*', 'MarkerSize', 10);
-xlabel('x (m)'); ylabel('y (m)'); title('Estratégia 1 (Vencedora): Trajetória');
-legend('Trajetória', 'C.I. (0, 70)', 'Chaveamento', 'Pouso (yf=0)');
+xlabel('x (m)'); ylabel('y (m)'); title('Estratégia 1: Trajetória Espacial');
+legend('Trajetória', 'C.I. (0, 70)', 'Pouso (yf=0)');
 
 subplot(1,2,2); plot(Vy_vec, y_parabola1, 'r--', 'LineWidth', 1.5); hold on; grid on; box on;
 plot(Vy_vec, y_parabola2, 'b--', 'LineWidth', 1.5);
 plot(Vy1_sim, y1_sim, 'b-', 'LineWidth', 2.5); plot(V0y, y0, 'ko', 'MarkerFaceColor', 'k');
-plot(Vy_ch1, y_ch1, 'gs', 'MarkerFaceColor', 'g', 'MarkerSize', 8);
 xlabel('V_y (m/s)'); ylabel('y (m)'); title('Estratégia 1: Plano de Fase');
-legend('Parábola 1', 'Parábola 2', 'Est 1', 'C.I.', 'Chaveamento', 'Location', 'northwest');
+legend('Parábola 1', 'Parábola 2', 'Est 1', 'C.I.', 'Location', 'northwest');
 
 % Figura 3: Estratégia 2
 figure('Name', 'Estratégia 2', 'Color', 'w');
 subplot(1,2,1); plot(x2, y2_sim, 'g-', 'LineWidth', 2.5); hold on; grid on; box on;
 plot(x2(1), y2_sim(1), 'ko', 'MarkerFaceColor', 'k');
-plot(x_ch2, y_ch2, 'bs', 'MarkerFaceColor', 'b', 'MarkerSize', 8);
 plot(x2(end), y2_sim(end), 'r*', 'MarkerSize', 10);
 xlabel('x (m)'); ylabel('y (m)'); title('Estratégia 2: Trajetória Espacial');
-legend('Trajetória', 'C.I. (0, 70)', 'Chaveamento', 'Pouso (yf=0)');
+legend('Trajetória', 'C.I. (0, 70)', 'Pouso (yf=0)');
 
 subplot(1,2,2); plot(Vy_vec, y_parabola1, 'r--', 'LineWidth', 1.5); hold on; grid on; box on;
 plot(Vy_vec, y_parabola2, 'b--', 'LineWidth', 1.5);
 plot(Vy2_sim, y2_sim, 'g-', 'LineWidth', 2.5); plot(V0y, y0, 'ko', 'MarkerFaceColor', 'k');
-plot(Vy_ch2, y_ch2, 'bs', 'MarkerFaceColor', 'b', 'MarkerSize', 8);
 xlabel('V_y (m/s)'); ylabel('y (m)'); title('Estratégia 2: Plano de Fase');
-legend('Parábola 1', 'Parábola 2', 'Est 2', 'C.I.', 'Chaveamento', 'Location', 'northwest');
+legend('Parábola 1', 'Parábola 2', 'Est 2', 'C.I.', 'Location', 'northwest');
 
 % Figura 4: Estratégia 3
 figure('Name', 'Estratégia 3', 'Color', 'w');
 subplot(1,2,1); plot(x3, y3_sim, 'm-', 'LineWidth', 2.5); hold on; grid on; box on;
 plot(x3(1), y3_sim(1), 'ko', 'MarkerFaceColor', 'k');
-plot(x_ch3, y_ch3, 'cs', 'MarkerFaceColor', 'c', 'MarkerSize', 8);
 plot(x3(end), y3_sim(end), 'r*', 'MarkerSize', 10);
 xlabel('x (m)'); ylabel('y (m)'); title('Estratégia 3: Trajetória Espacial');
-legend('Trajetória', 'C.I. (0, 70)', 'Chaveamento', 'Pouso (yf=0)');
+legend('Trajetória', 'C.I. (0, 70)', 'Pouso (yf=0)');
 
 subplot(1,2,2); plot(Vy_vec, y_parabola1, 'r--', 'LineWidth', 1.5); hold on; grid on; box on;
 plot(Vy_vec, y_parabola2, 'b--', 'LineWidth', 1.5);
 plot(Vy3_sim, y3_sim, 'm-', 'LineWidth', 2.5); plot(V0y, y0, 'ko', 'MarkerFaceColor', 'k');
-plot(Vy_ch3, y_ch3, 'cs', 'MarkerFaceColor', 'c', 'MarkerSize', 8);
 xlabel('V_y (m/s)'); ylabel('y (m)'); title('Estratégia 3: Plano de Fase');
-legend('Parábola 1', 'Parábola 2', 'Est 3', 'C.I.', 'Chaveamento', 'Location', 'northwest');
+legend('Parábola 1', 'Parábola 2', 'Est 3', 'C.I.', 'Location', 'northwest');
 
 saveas(figure(1), 'janela_pouso.png');
 saveas(figure(2), 'estrategia1.png');
