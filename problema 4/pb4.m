@@ -1,6 +1,6 @@
 clear; clc; close all;
 
-%% 1. Parâmetros do Problema (Prof. Gil)
+%% 1. Parâmetros do Problema
 M = 1.0;            % Massa do módulo lunar (kg)
 g = 2.0;            % Aceleração da gravidade lunar (m/s^2)
 E = 3.0;            % Empuxo do retrofoguete (N)
@@ -26,7 +26,7 @@ plot(V0y, y0, 'ko', 'MarkerFaceColor', 'k', 'MarkerSize', 8);
 xlabel('V_y (m/s)'); ylabel('y (m)'); title('Janela de Pouso Suave');
 legend('Parábola 1: \theta = 0°', 'Parábola 2: \theta = \pm 34°', 'C.I. (-7, 70)', 'Location', 'northwest');
 
-%% 4. ESTRATÉGIAS DE POUSO SUAVE (DISPARO ÚNICO E MISTO)
+%% 4. Estratégias de Pouso Suave
 t_freio_x = (0 - V0x) / ax_neg;         % Tempo a -34° para zerar Vx (2.38 s)
 dx_brake  = V0x * t_freio_x + 0.5 * ax_neg * t_freio_x^2;
 
@@ -38,83 +38,77 @@ A1 = (g/2) * (g/ay_zero + 1);
 B1 = -(g * V2_base)/ay_zero - (V0y - g * t_freio_x);
 C1 = (V2_base^2)/(2 * ay_zero) - y_base;
 
-t_livre1 = (-B1 + sqrt(B1^2 - 4*A1*C1)) / (2*A1); % Queda livre = 1.37 s
-Vy_ch1   = V0y - g*t_livre1 + ay_34*t_freio_x;    % Vy chaveamento = -8.57 m/s
-y_ch1    = Vy_ch1^2 / (2*ay_zero);                 % y chaveamento = 36.74 m
-x_ch1    = V0x * t_livre1 + dx_brake;             % x chaveamento = 10.24 m
-t_freio1_y = (0 - Vy_ch1) / ay_zero;               % Queima vertical = 8.57 s
-t1_tot   = t_livre1 + t_freio_x + t_freio1_y;     % Tempo Total = 12.32 s
-t1_queima= t_freio_x + t_freio1_y;               % Queima = 10.96 s
+t_livre1 = (-B1 + sqrt(B1^2 - 4*A1*C1)) / (2*A1);
+Vy_ch1   = V0y - g*t_livre1 + ay_34*t_freio_x;
+y_ch1    = Vy_ch1^2 / (2*ay_zero);
+x_ch1    = V0x * t_livre1 + dx_brake;
+t_freio1_y = (0 - Vy_ch1) / ay_zero;
+t1_tot   = t_livre1 + t_freio_x + t_freio1_y;
+t1_queima= t_freio_x + t_freio1_y;
 
 % --- Estratégia 2: Disparo Único -> Parábola 2 (\theta = ±34°) ---
 A2 = (g/2) * (g/ay_34 + 1);
 B2 = -(g * V2_base)/ay_34 - (V0y - g * t_freio_x);
 C2 = (V2_base^2)/(2 * ay_34) - y_base;
 
-t_livre2 = (-B2 + sqrt(B2^2 - 4*A2*C2)) / (2*A2); % Queda livre = 0.51 s
-Vy_ch2   = V0y - g*t_livre2 + ay_34*t_freio_x;    % Vy chaveamento = -6.87 m/s
-y_ch2    = Vy_ch2^2 / (2*ay_34);                   % y chaveamento = 48.39 m
-x_ch2    = V0x * t_livre2 + dx_brake;             % x chaveamento = 6.82 m
-t_freio2_y = (0 - Vy_ch2) / ay_34;               % Queima vertical = 14.10 s
-t2_tot   = t_livre2 + t_freio_x + t_freio2_y;     % Tempo Total = 16.99 s
-t2_queima= t_freio_x + t_freio2_y;               % Queima = 16.48 s
+t_livre2 = (-B2 + sqrt(B2^2 - 4*A2*C2)) / (2*A2);
+Vy_ch2   = V0y - g*t_livre2 + ay_34*t_freio_x;
+y_ch2    = Vy_ch2^2 / (2*ay_34);
+x_ch2    = V0x * t_livre2 + dx_brake;
+t_freio2_y = (0 - Vy_ch2) / ay_34;
+t2_tot   = t_livre2 + t_freio_x + t_freio2_y;
+t2_queima= t_freio_x + t_freio2_y;
 
-% --- Estratégia 3: Disparo Misto Intermediário (Queda livre t = 0.94s + Transição de Ângulo) ---
-t_livre3 = (t_livre1 + t_livre2) / 2.0;            % Queda livre intermediária = 0.94 s
-Vy_ch3   = V0y - g*t_livre3 + ay_34*t_freio_x;    % Vy chaveamento = -7.72 m/s
-y_ch3    = (y0 + V0y*t_livre3 - 0.5*g*t_livre3^2) + (V0y - g*t_livre3)*t_freio_x + 0.5*ay_34*t_freio_x^2; % 42.75 m
-x_ch3    = V0x * t_livre3 + dx_brake;             % x chaveamento = 8.53 m
+% --- Estratégia 3: Disparo Misto (\theta = ±34° -> 0°) ---
+t_livre3 = (t_livre1 + t_livre2) / 2.0;
+Vy_ch3   = V0y - g*t_livre3 + ay_34*t_freio_x;
+y_ch3    = (y0 + V0y*t_livre3 - 0.5*g*t_livre3^2) + (V0y - g*t_livre3)*t_freio_x + 0.5*ay_34*t_freio_x^2;
+x_ch3    = V0x * t_livre3 + dx_brake;
 
 A3_quad = 0.5 * ay_34 * (1 - ay_34 / ay_zero);
 B3_quad = Vy_ch3 * (1 - ay_34 / ay_zero);
 C3_quad = y_ch3 - (Vy_ch3^2) / (2 * ay_zero);
 
-t3_A = (-B3_quad - sqrt(B3_quad^2 - 4*A3_quad*C3_quad)) / (2*A3_quad); % 3.70 s
-t3_B = (0 - Vy_ch3 - ay_34 * t3_A) / ay_zero;                           % 5.92 s
-t3_queima = t_freio_x + t3_A + t3_B;               % Queima = 12.00 s
-t3_tot   = t_livre3 + t3_queima;                   % Tempo Total = 12.94 s
+t3_A = (-B3_quad - sqrt(B3_quad^2 - 4*A3_quad*C3_quad)) / (2*A3_quad);
+t3_B = (0 - Vy_ch3 - ay_34 * t3_A) / ay_zero;
+t3_queima = t_freio_x + t3_A + t3_B;
+t3_tot   = t_livre3 + t3_queima;
 
-%% 5. IMPRESSÃO DOS RESULTADOS E IDENTIFICAÇÃO DA VENCEDORA
+%% 5. Impressão dos Resultados
 fprintf('=================================================================\n');
-fprintf('        ANÁLISE DAS ESTRATÉGIAS DE POUSO SUAVE (PROF. GIL)       \n');
+fprintf('            ANÁLISE DAS ESTRATÉGIAS DE POUSO SUAVE               \n');
 fprintf('=================================================================\n\n');
 
-fprintf('--- ESTRATÉGIA 1 (Disparo Único -> Parábola 1: \\theta = 0°) ---\n');
+fprintf('Estratégia 1 (Disparo Único -> Parábola 1: \\theta = 0°):\n');
 fprintf('  1) t = 0.00s a %.2fs : Foguete DESLIGADO (Queda livre inicial)\n', t_livre1);
 fprintf('  2) t = %.2fs a %.2fs : \\theta = -34° (LIGA FOGUETE: freia Vx)\n', t_livre1, t_livre1 + t_freio_x);
-fprintf('     -> Ponto de Chaveamento: (Vy = %.2f m/s, y = %.2f m, x = %.2f m)\n', Vy_ch1, y_ch1, x_ch1);
 fprintf('  3) t = %.2fs a %.2fs : \\theta = 0°   (Motor LIGADO sobre Parábola 1)\n', t_livre1 + t_freio_x, t1_tot);
 fprintf('  -> Tempo Total: %.2f s | Tempo de Queima: %.2f s | Posição Final xf: %.2f m\n\n', t1_tot, t1_queima, x_ch1);
 
-fprintf('--- ESTRATÉGIA 2 (Disparo Único -> Parábola 2: \\theta = \\pm34°) ---\n');
+fprintf('Estratégia 2 (Disparo Único -> Parábola 2: \\theta = \\pm34°):\n');
 fprintf('  1) t = 0.00s a %.2fs : Foguete DESLIGADO (Queda livre inicial)\n', t_livre2);
 fprintf('  2) t = %.2fs a %.2fs : \\theta = -34° (LIGA FOGUETE: freia Vx)\n', t_livre2, t_livre2 + t_freio_x);
-fprintf('     -> Ponto de Chaveamento: (Vy = %.2f m/s, y = %.2f m, x = %.2f m)\n', Vy_ch2, y_ch2, x_ch2);
 fprintf('  3) t = %.2fs a %.2fs : \\theta = \\pm34° (Motor LIGADO sobre Parábola 2)\n', t_livre2 + t_freio_x, t2_tot);
 fprintf('  -> Tempo Total: %.2f s | Tempo de Queima: %.2f s | Posição Final xf: %.2f m\n\n', t2_tot, t2_queima, x_ch2);
 
-fprintf('--- ESTRATÉGIA 3 (Disparo Misto -> Transição \\pm34° -> 0°) ---\n');
+fprintf('Estratégia 3 (Disparo Misto -> Transição \\pm34° -> 0°):\n');
 fprintf('  1) t = 0.00s a %.2fs : Foguete DESLIGADO (Queda livre inicial)\n', t_livre3);
 fprintf('  2) t = %.2fs a %.2fs : \\theta = -34° (LIGA FOGUETE: freia Vx)\n', t_livre3, t_livre3 + t_freio_x);
-fprintf('     -> Ponto de Chaveamento: (Vy = %.2f m/s, y = %.2f m, x = %.2f m)\n', Vy_ch3, y_ch3, x_ch3);
 fprintf('  3) t = %.2fs a %.2fs : \\theta = \\pm34° (3.70s) e \\theta = 0° (5.92s) até pouso\n', t_livre3 + t_freio_x, t3_tot);
 fprintf('  -> Tempo Total: %.2f s | Tempo de Queima: %.2f s | Posição Final xf: %.2f m\n\n', t3_tot, t3_queima, x_ch3);
 
 fprintf('=================================================================\n');
-fprintf('        ESTRATÉGIA VENCEDORA (MÍNIMO COMBUSTÍVEL - QUESTÃO 6)    \n');
-fprintf('=================================================================\n');
-fprintf('  *** ESTRATÉGIA 1 É A VENCEDORA! ***\n');
-fprintf('  - Tempo de Queima Estratégia 1: %.2f s  (VENCEDORA - MÍNIMO COMBUSTÍVEL)\n', t1_queima);
-fprintf('  - Tempo de Queima Estratégia 3: %.2f s  (Intermediária)\n', t3_queima);
-fprintf('  - Tempo de Queima Estratégia 2: %.2f s  (Maior consumo)\n', t2_queima);
-fprintf('  -> Economia da Vencedora: %.2f s em relação à Est. 2 e %.2f s em relação à Est. 3.\n', ...
-        t2_queima - t1_queima, t3_queima - t1_queima);
-fprintf('  -> Motivo: A Estratégia 1 utiliza empuxo puramente vertical (\\theta = 0°)\n');
-fprintf('     na fase final, maximizando a aceleração vertical ascendente (ay = 1.0 m/s^2)\n');
-fprintf('     e reduzindo o tempo necessário de motor ligado para desacelerar o módulo.\n');
+fprintf('CONCLUSÃO (Questão 6):\n');
+fprintf('A ESTRATÉGIA 1 É A MELHOR E MINIMIZA O GASTO DE COMBUSTÍVEL!\n');
+fprintf('  - Tempo de queima Est. 1: %.2f s (Vencedora)\n', t1_queima);
+fprintf('  - Tempo de queima Est. 3: %.2f s\n', t3_queima);
+fprintf('  - Tempo de queima Est. 2: %.2f s\n', t2_queima);
+fprintf('A Estratégia 1 economiza %.2f s de queima em relação à Estratégia 2\n', t2_queima - t1_queima);
+fprintf('e %.2f s em relação à Estratégia 3, pois o empuxo a \\theta = 0° maximiza\n', t3_queima - t1_queima);
+fprintf('a aceleração vertical (ay = 1.0 m/s^2).\n');
 fprintf('=================================================================\n\n');
 
-%% 6. SIMULAÇÃO E GRÁFICOS
+%% 6. Simulação e Gráficos
 dt = 0.005;
 
 % Simulação Estratégia 1
@@ -162,8 +156,8 @@ for k = 1:N3-1
     x3(k+1)  = x3(k) + Vx3(k)*dt; y3_sim(k+1) = max(0, y3_sim(k) + Vy3_sim(k)*dt);
 end
 
-% Figura 2: Estratégia 1 (Vencedora)
-figure('Name', 'Estratégia 1 (Vencedora)', 'Color', 'w');
+% Figura 2: Estratégia 1
+figure('Name', 'Estratégia 1', 'Color', 'w');
 subplot(1,2,1); plot(x1, y1_sim, 'b-', 'LineWidth', 2.5); hold on; grid on; box on;
 plot(x1(1), y1_sim(1), 'ko', 'MarkerFaceColor', 'k');
 plot(x1(end), y1_sim(end), 'r*', 'MarkerSize', 10);
